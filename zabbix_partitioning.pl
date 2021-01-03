@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 use strict;
 use Data::Dumper;
 use DBI;
@@ -7,8 +9,8 @@ use POSIX qw(strftime);
 openlog("mysql_zbx_part", "ndelay,pid", LOG_LOCAL0);
 my $db_schema = 'zabbix';
 my $dsn = 'DBI:mysql:'.$db_schema.':mysql_socket=/var/run/mysqld/mysqld.sock';
-my $db_user_name = 'Admin';
-my $db_password = 'zabbix';
+my $db_user_name = 'zabbix';
+my $db_password = 'password';
 my $tables = { 'history' => { 'period' => 'day', 'keep_history' => '7'},
 'history_log' => { 'period' => 'day', 'keep_history' => '7'},
 'history_str' => { 'period' => 'day', 'keep_history' => '7'},
@@ -144,3 +146,4 @@ sub delete_old_data {
 $dbh->do("DELETE FROM sessions WHERE lastaccess < UNIX_TIMESTAMP(NOW() - INTERVAL 1 MONTH)");
 $dbh->do("TRUNCATE housekeeper");
 $dbh->do("DELETE FROM auditlog_details WHERE NOT EXISTS (SELECT NULL FROM auditlog WHERE auditlog.auditid = auditlog_details.auditid)");
+}
